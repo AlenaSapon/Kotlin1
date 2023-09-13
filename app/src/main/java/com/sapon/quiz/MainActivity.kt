@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
                     (key, value) ->
                 if (value==AnswerType.UNDEFINED) currentQuizItem=key}
             val newIntent= Intent(applicationContext,QuestionActivity::class.java)
-            newIntent.putExtra("question", currentQuizItem!!.question) // TODO
-            newIntent.putExtra("answer0", currentQuizItem!!.answer.get(0))
-            newIntent.putExtra("answer1", currentQuizItem!!.answer.get(1))
-            newIntent.putExtra("correctIndex", currentQuizItem!!.correctId)
+            newIntent.putExtra(IntentKeys.KEY_QUESTION, currentQuizItem!!.question) // TODO
+            newIntent.putExtra(IntentKeys.KEY_ANSWER1, currentQuizItem!!.answer.get(0))
+            newIntent.putExtra(IntentKeys.KEY_ANSWER2, currentQuizItem!!.answer.get(1))
+            newIntent.putExtra(IntentKeys.KEY_CORRECT_INDEX, currentQuizItem!!.correctId)
             startActivity(newIntent)
         }
     }
@@ -43,6 +43,15 @@ class MainActivity : AppCompatActivity() {
 }
 
 data class QuizItem(val question : String, val answer : List<String>, val correctId : Int)
+
+class IntentKeys {
+    companion object {
+        val KEY_QUESTION: String="question"
+        val KEY_ANSWER1:String="answer0"
+        val KEY_ANSWER2:String="answer1"
+        val KEY_CORRECT_INDEX:String="correctIndex"
+    }
+}
 
 fun createQuestionList(): List<QuizItem>{
    // val quizItemList: List<QuizItem> = listOf() return immutable list
