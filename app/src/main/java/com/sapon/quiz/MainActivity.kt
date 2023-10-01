@@ -32,7 +32,18 @@ class MainActivity : AppCompatActivity() {
             newIntent.putExtra(IntentKeys.KEY_CORRECT_INDEX, currentQuizItem!!.correctId)
             startActivity(newIntent)
         }
+
+
     }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
 
     private fun startNewQuiz() {
         activeQuiz = mutableMapOf()
