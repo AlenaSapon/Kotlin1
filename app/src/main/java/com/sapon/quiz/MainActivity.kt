@@ -50,6 +50,7 @@ class IntentKeys {
         val KEY_ANSWER1:String="answer0"
         val KEY_ANSWER2:String="answer1"
         val KEY_CORRECT_INDEX:String="correctIndex"
+        const val KEY_RESULT="KEY_RESULT"
     }
 }
 
