@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.sapon.quiz"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sapon.quiz"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

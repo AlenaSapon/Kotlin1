@@ -12,6 +12,7 @@ class QuestionActivity : AppCompatActivity() {
         val answer0 = intent.getStringExtra(IntentKeys.KEY_ANSWER1)
         val answer1 = intent.getStringExtra(IntentKeys.KEY_ANSWER2)
         val correctIndex = intent.getIntExtra(IntentKeys.KEY_CORRECT_INDEX, -1)
-        Log.d("My tag", "question: $question, answer1: $answer0 answer2: $answer1 correctIndex: $correctIndex")
+        Log.d(QuestionActivity::class.java.simpleName, "question: $question, answer1: $answer0 answer2: $answer1 correctIndex: $correctIndex")
+
     }
 }
