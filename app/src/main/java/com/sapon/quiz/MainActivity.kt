@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 
@@ -49,8 +50,8 @@ class MainActivity() : AppCompatActivity() {
        else {
            showQuestion()
        }
-
     }
+
     private fun showQuestion() {
         val newIntent = Intent(applicationContext, QuestionActivity::class.java)
         newIntent.putExtra(IntentKeys.KEY_QUESTION, currentQuizItem!!.question)
@@ -61,7 +62,15 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun showResult() {
-        TODO("Not yet implemented")
+        val numberOfAllQuestions = activeQuiz?.keys?.size
+        val numberOfCorrectAnswers = activeQuiz?.values?.filter { it == AnswerType.CORRECT }?.size
+        findViewById<TextView>(R.id.tv_show_result)
+            .text = "You answered "
+            .plus(numberOfCorrectAnswers)
+            .plus(" out of ")
+            .plus(numberOfAllQuestions)
+            .plus(" questions correct!")
+        activeQuiz=null
     }
 
     override fun onStart() {
