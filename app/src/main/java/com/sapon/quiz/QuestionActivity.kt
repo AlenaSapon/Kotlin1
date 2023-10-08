@@ -1,5 +1,6 @@
 package com.sapon.quiz
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +61,8 @@ class QuestionActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             intent = Intent(applicationContext, MainActivity::class.java)
             intent.putExtra(IntentKeys.KEY_RESULT, result)
-            startActivity(intent)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
 
 

@@ -1,39 +1,57 @@
 package com.sapon.quiz
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : AppCompatActivity() {
     private lateinit var quizItems:List<QuizItem>
     private lateinit var startButton: Button
+    private var currentQuizItem:QuizItem?=null
     private var activeQuiz: MutableMap<QuizItem, AnswerType>?=null
         override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        quizItems = createQuestionList()
-        startButton = findViewById<Button>(R.id.btn_quiz_start)
-        startButton.setOnClickListener{
-            if(activeQuiz==null){
-                startNewQuiz()
-            }
-            else {
-                TODO()
-            }
-            var currentQuizItem:QuizItem?=null
-            activeQuiz!!.forEach {
-                    (key, value) ->
-                if (value==AnswerType.UNDEFINED) currentQuizItem=key}
-            val newIntent= Intent(applicationContext,QuestionActivity::class.java)
-            newIntent.putExtra(IntentKeys.KEY_QUESTION, currentQuizItem!!.question) // TODO
-            newIntent.putExtra(IntentKeys.KEY_ANSWER1, currentQuizItem!!.answer.get(0))
-            newIntent.putExtra(IntentKeys.KEY_ANSWER2, currentQuizItem!!.answer.get(1))
-            newIntent.putExtra(IntentKeys.KEY_CORRECT_INDEX, currentQuizItem!!.correctId)
-            startActivity(newIntent)
+            quizItems = createQuestionList()
+            startButton = findViewById(R.id.btn_quiz_start)
+            startButton.setOnClickListener{
+                checkNextOrFinish()
         }
+    }
+    private fun checkNextOrFinish() {
+        if(activeQuiz==null){
+            startNewQuiz()
+        }
+        activeQuiz!!.forEach { (key, value) ->
+            if (value == AnswerType.UNDEFINED) currentQuizItem = key
+        }
+       if (currentQuizItem==null) {showResult()}
+       else {
+           val newIntent= Intent(applicationContext,QuestionActivity::class.java)
+           newIntent.putExtra(IntentKeys.KEY_QUESTION, currentQuizItem!!.question)
+           newIntent.putExtra(IntentKeys.KEY_ANSWER1, currentQuizItem!!.answer[0])
+           newIntent.putExtra(IntentKeys.KEY_ANSWER2, currentQuizItem!!.answer[1])
+           newIntent.putExtra(IntentKeys.KEY_CORRECT_INDEX, currentQuizItem!!.correctId)
+           val activityLauncher =
+               registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                   if (result.resultCode==Activity.RESULT_OK){
+                       val incomingIntent = result.data
+                       val isCorrect = incomingIntent?.getBooleanExtra(IntentKeys.KEY_RESULT, false)?:false
+                       activeQuiz?.put(currentQuizItem!!, if (isCorrect) AnswerType.CORRECT else AnswerType.INCORRECT)
+                       currentQuizItem=null
+                       checkNextOrFinish()
+                   }
+               }
+           activityLauncher.launch(newIntent)
+       }
 
+    }
 
+    private fun showResult() {
+        TODO("Not yet implemented")
     }
 
     override fun onStart() {
@@ -52,6 +70,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
 
 data class QuizItem(val question : String, val answer : List<String>, val correctId : Int)
 
