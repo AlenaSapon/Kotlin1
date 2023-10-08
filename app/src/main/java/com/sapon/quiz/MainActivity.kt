@@ -18,6 +18,7 @@ class MainActivity() : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
             activityLauncher =
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                     if (result.resultCode == RESULT_OK) {
@@ -39,10 +40,33 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        val questionStore:QuestionStore= QuestionStore(getSharedPreferences(IntentKeys.PREF_NAME,
+            MODE_PRIVATE))
+        questionStore.answers=activeQuiz?.values?.joinToString(separator = IntentKeys.SEPARATOR)?:""
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val questionStore:QuestionStore= QuestionStore(getSharedPreferences(IntentKeys.PREF_NAME,
+            MODE_PRIVATE))
+        val preferences =questionStore.answers.split(IntentKeys.SEPARATOR)
+        createNewQuiz()
+        activeQuiz?.keys?.zip(preferences)?.
+        forEach {activeQuiz?.put(it.first
+            , if(it.second=="") AnswerType.UNDEFINED else AnswerType.valueOf(it.second))}
+        //=activeQuiz?.values?.joinToString(separator = IntentKeys.SEPARATOR)?:""
+    }
+
+
+
     private fun checkNextOrFinish() {
         if(activeQuiz==null){
-            startNewQuiz()
+            createNewQuiz()
         }
+
         activeQuiz!!.forEach { (key, value) ->
             if (value == AnswerType.UNDEFINED) currentQuizItem = key
         }
@@ -73,16 +97,14 @@ class MainActivity() : AppCompatActivity() {
         activeQuiz=null
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
+
 
     override fun onResume() {
         super.onResume()
     }
 
 
-    private fun startNewQuiz() {
+    private fun createNewQuiz() {
         activeQuiz = mutableMapOf()
        for (index in 0..3){
            activeQuiz!!.put(quizItems.get(index), AnswerType.UNDEFINED) //!! безусловное приведение к nonnullable
@@ -101,6 +123,8 @@ class IntentKeys {
         val KEY_ANSWER2:String="answer1"
         val KEY_CORRECT_INDEX:String="correctIndex"
         const val KEY_RESULT="KEY_RESULT"
+        const val PREF_NAME="PREF_NAME"
+        const val SEPARATOR = ";"
     }
 }
 
